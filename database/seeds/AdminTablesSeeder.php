@@ -1,5 +1,9 @@
 <?php
 
+use Encore\Admin\Auth\Database\Administrator;
+use Encore\Admin\Auth\Database\Menu;
+use Encore\Admin\Auth\Database\Permission;
+use Encore\Admin\Auth\Database\Role;
 use Illuminate\Database\Seeder;
 
 class AdminTablesSeeder extends Seeder
@@ -12,8 +16,8 @@ class AdminTablesSeeder extends Seeder
     public function run()
     {
         // base tables
-        Encore\Admin\Auth\Database\Menu::truncate();
-        Encore\Admin\Auth\Database\Menu::insert(
+        Menu::truncate();
+        Menu::insert(
             [
                 [
                     "parent_id" => 0,
@@ -70,12 +74,53 @@ class AdminTablesSeeder extends Seeder
                     "icon" => "fa-history",
                     "uri" => "auth/logs",
                     "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 8,
+                    "title" => "Log Viewer",
+                    "icon" => "fa-database",
+                    "uri" => "logs",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 9,
+                    "title" => "Composer Viewer",
+                    "icon" => "fa-gears",
+                    "uri" => "composer-viewer",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 10,
+                    "title" => "Env Manager",
+                    "icon" => "fa-gears",
+                    "uri" => "env-manager",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 11,
+                    "title" => "PHP info",
+                    "icon" => "fa-exclamation",
+                    "uri" => "phpinfo",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 12,
+                    "title" => "Horizon",
+                    "icon" => "fa-database",
+                    "uri" => "horizon",
+                    "permission" => NULL
                 ]
             ]
         );
 
-        Encore\Admin\Auth\Database\Permission::truncate();
-        Encore\Admin\Auth\Database\Permission::insert(
+        //create a permission
+        Permission::truncate();
+        Permission::insert(
             [
                 [
                     "name" => "All permission",
@@ -106,12 +151,19 @@ class AdminTablesSeeder extends Seeder
                     "slug" => "auth.management",
                     "http_method" => "",
                     "http_path" => "/auth/roles\r\n/auth/permissions\r\n/auth/menu\r\n/auth/logs"
+                ],
+                [
+                    "name" => "Logs",
+                    "slug" => "ext.log-viewer",
+                    "http_method" => NULL,
+                    "http_path" => "/logs*"
                 ]
             ]
         );
 
-        Encore\Admin\Auth\Database\Role::truncate();
-        Encore\Admin\Auth\Database\Role::insert(
+        // create a role.
+        Role::truncate();
+        Role::insert(
             [
                 [
                     "name" => "Administrator",
@@ -119,6 +171,23 @@ class AdminTablesSeeder extends Seeder
                 ]
             ]
         );
+
+        // add a permission to a role.
+        // Role::first()->permissions()->save(Permission::first());
+
+        // add role to menu.
+        // Menu::find(2)->roles()->save(Role::first());
+
+        // create a user.
+        Administrator::truncate();
+        Administrator::create([
+            'username' => 'admin',
+            'password' => bcrypt('admin'),
+            'name'     => 'Administrator',
+        ]);
+
+        // add a role to a user.
+        Administrator::first()->roles()->save(Role::first());
 
         // pivot tables
         DB::table('admin_role_menu')->truncate();
@@ -131,6 +200,9 @@ class AdminTablesSeeder extends Seeder
             ]
         );
 
+        // add role to menu.
+        // Menu::find(2)->roles()->save(Role::first());
+
         DB::table('admin_role_permissions')->truncate();
         DB::table('admin_role_permissions')->insert(
             [
@@ -140,6 +212,9 @@ class AdminTablesSeeder extends Seeder
                 ]
             ]
         );
+
+        // add a permission to a role.
+        // Role::first()->permissions()->save(Permission::first());
 
         // finish
     }
