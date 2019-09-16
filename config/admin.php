@@ -153,7 +153,8 @@ return [
     'upload' => [
 
         // Disk in `config/filesystem.php`.
-        'disk' => 'admin',
+        // 'disk' => 'admin',
+        'disk' => 'public',
 
         // Image and file upload path under the disk above.
         'directory' => [
@@ -197,6 +198,9 @@ return [
         'role_users_table' => 'admin_role_users',
         'role_permissions_table' => 'admin_role_permissions',
         'role_menu_table' => 'admin_role_menu',
+
+        // laravel-admin-ext/config
+        'config_table' => 'admin_config',
     ],
 
     /*
@@ -398,6 +402,9 @@ return [
         'composer-viewer' => [
             // Set this to false if you want to disable this extension
             'enable' => true,
+        ],
+        'config' => [
+            'table' => 'admin_config',
         ],
         'env-manager' => [
             // If the value is set to false, this extension will be disabled

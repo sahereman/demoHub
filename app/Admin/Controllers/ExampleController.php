@@ -27,6 +27,7 @@ class ExampleController extends AdminController
         $grid->model()->orderBy('created_at', 'desc'); // 设置初始排序条件
 
         // 禁用创建按钮
+        // $grid->disableCreation(); // Deprecated
         $grid->disableCreateButton();
         // 禁用分页条
         $grid->disablePagination();
@@ -139,7 +140,7 @@ class ExampleController extends AdminController
             });
 
             $user->name('Name');
-            $user->gender('Gender');
+            $user->gender('Gender')->using(['male' => '男', 'female' => '女'], 'male');
             $user->phone('Phone');
         });
 

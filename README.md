@@ -224,7 +224,7 @@ $ php artisan list
 # OR: 在 homestead 环境下: (art = php artisan)
 $ art list
 
-# 创建API 控制器
+# 创建 API 控制器
 $ php artisan make:controller Api/{控制器名称}Controller # 控制器名称一般为模型复数名
 $ php artisan make:request Api/{验证器名称}Request
 $ php artisan jwt:secret # 更换这个secret 会导致之前生成的所有 token 无效。

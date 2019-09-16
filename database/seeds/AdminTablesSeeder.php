@@ -96,14 +96,16 @@ class AdminTablesSeeder extends Seeder
                     "order" => 10,
                     "title" => "Env Manager",
                     "icon" => "fa-gears",
-                    "uri" => "env-manager",
+                    // "uri" => "env-manager",
+                    "uri" => "env-envira",
                     "permission" => NULL
                 ],
                 [
                     "parent_id" => 2,
                     "order" => 11,
                     "title" => "PHP info",
-                    "icon" => "fa-exclamation",
+                    // "icon" => "fa-exclamation",
+                    "icon" => "fa-info",
                     "uri" => "phpinfo",
                     "permission" => NULL
                 ],
@@ -111,7 +113,8 @@ class AdminTablesSeeder extends Seeder
                     "parent_id" => 2,
                     "order" => 12,
                     "title" => "Horizon",
-                    "icon" => "fa-database",
+                    // "icon" => "fa-database",
+                    "icon" => "fa-support",
                     "uri" => "horizon",
                     "permission" => NULL
                 ]

@@ -16,4 +16,5 @@ Route::group([
     $router->post('wang_editor/images', 'WangEditorController@images')->name('admin.wang_editor.images');/*WangEditor 上传图片*/
 
     $router->resource('users', 'UsersController');
+    $router->resource('designers', 'DesignersController');
 });

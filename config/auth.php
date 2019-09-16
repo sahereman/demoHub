@@ -15,7 +15,8 @@ return [
 
     'defaults' => [
         'guard' => 'web',
-        'passwords' => 'users',
+        // 'passwords' => 'users',
+        'passwords' => 'designers',
     ],
 
     /*
@@ -38,12 +39,14 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            // 'provider' => 'users',
+            'provider' => 'designers',
         ],
 
         'api' => [
             'driver' => 'token',
-            'provider' => 'users',
+            // 'provider' => 'users',
+            'provider' => 'designers',
             'hash' => false,
         ],
     ],
@@ -69,6 +72,10 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+        'designers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Designer::class,
         ],
 
         // 'users' => [
@@ -96,6 +103,11 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
+            'expire' => 60,
+        ],
+        'designers' => [
+            'provider' => 'designers',
+            'table' => 'designer_password_resets',
             'expire' => 60,
         ],
     ],

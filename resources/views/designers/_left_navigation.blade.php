@@ -1,0 +1,1 @@
+designers._left_navigation.blade
