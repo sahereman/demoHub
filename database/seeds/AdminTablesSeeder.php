@@ -30,70 +30,102 @@ class AdminTablesSeeder extends Seeder
                 [
                     "parent_id" => 0,
                     "order" => 2,
+                    "title" => "DemoHub",
+                    "icon" => "fa-table",
+                    "uri" => "",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 1,
+                    "title" => "Designers",
+                    "icon" => "fa-pencil",
+                    "uri" => "/designers",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 1,
+                    "title" => "Clients",
+                    "icon" => "fa-pencil",
+                    "uri" => "/clients",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 1,
+                    "title" => "Demos",
+                    "icon" => "fa-tablet",
+                    "uri" => "/demos",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 0,
+                    "order" => 3,
                     "title" => "Admin",
                     "icon" => "fa-tasks",
                     "uri" => "",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 3,
+                    "parent_id" => 6,
+                    "order" => 1,
                     "title" => "Users",
                     "icon" => "fa-users",
                     "uri" => "auth/users",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 4,
+                    "parent_id" => 6,
+                    "order" => 2,
                     "title" => "Roles",
                     "icon" => "fa-user",
                     "uri" => "auth/roles",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 5,
+                    "parent_id" => 6,
+                    "order" => 3,
                     "title" => "Permission",
                     "icon" => "fa-ban",
                     "uri" => "auth/permissions",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 6,
+                    "parent_id" => 6,
+                    "order" => 4,
                     "title" => "Menu",
                     "icon" => "fa-bars",
                     "uri" => "auth/menu",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 7,
+                    "parent_id" => 6,
+                    "order" => 5,
                     "title" => "Operation log",
                     "icon" => "fa-history",
                     "uri" => "auth/logs",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 8,
+                    "parent_id" => 6,
+                    "order" => 6,
                     "title" => "Log Viewer",
                     "icon" => "fa-database",
                     "uri" => "logs",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 9,
+                    "parent_id" => 6,
+                    "order" => 7,
                     "title" => "Composer Viewer",
                     "icon" => "fa-gears",
                     "uri" => "composer-viewer",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 10,
+                    "parent_id" => 6,
+                    "order" => 8,
                     "title" => "Env Manager",
                     "icon" => "fa-gears",
                     // "uri" => "env-manager",
@@ -101,8 +133,8 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 11,
+                    "parent_id" => 6,
+                    "order" => 9,
                     "title" => "PHP info",
                     // "icon" => "fa-exclamation",
                     "icon" => "fa-info",
@@ -110,8 +142,8 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
-                    "order" => 12,
+                    "parent_id" => 6,
+                    "order" => 10,
                     "title" => "Horizon",
                     // "icon" => "fa-database",
                     "icon" => "fa-support",

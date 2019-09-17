@@ -68,7 +68,7 @@ class DesignersController extends AdminController
         // $grid->column('email_verified_at', 'Email verified at');
         $grid->column('gender', 'Gender')->using(['male' => '男', 'female' => '女'], 'male');
         $grid->column('qq', 'QQ');
-        $grid->column('wechat', 'Wechat');
+        $grid->column('wechat', 'WeChat');
         $grid->column('phone', 'Phone');
         // $grid->column('password', 'Password');
         // $grid->column('remember_token', 'Remember token');
@@ -100,7 +100,7 @@ class DesignersController extends AdminController
         // $show->field('gender', 'Gender');
         $show->field('gender', 'Gender')->using(['male' => '男', 'female' => '女'], 'male');
         $show->field('qq', 'QQ');
-        $show->field('wechat', 'Wechat');
+        $show->field('wechat', 'WeChat');
         $show->field('phone', 'Phone');
         // $show->field('password', 'Password');
         // $show->field('remember_token', 'Remember token');
@@ -123,8 +123,8 @@ class DesignersController extends AdminController
             $tools->disableDelete();
         });
 
-        $form->display('id', 'ID');
-        $form->image('avatar', '头像')->uniqueName()->move('avatar/' . date('Ym', now()->timestamp))->rules('required|image');
+        // $form->display('id', 'ID');
+        $form->image('avatar', '头像')->uniqueName()->move('avatar/designers/' . date('Ym', now()->timestamp))->rules('required|image');
         $form->text('name', 'Name');
         // $form->image('avatar', 'Avatar');
         $form->email('email', 'Email');
@@ -136,7 +136,7 @@ class DesignersController extends AdminController
             'off' => ['value' => 'female', 'text' => '女', 'color' => 'danger'],
         ])->default('male');
         $form->text('qq', 'QQ');
-        $form->text('wechat', 'Wechat');
+        $form->text('wechat', 'WeChat');
         $form->mobile('phone', 'Phone');
         // $form->password('password', 'Password');
         // $form->text('remember_token', 'Remember token');

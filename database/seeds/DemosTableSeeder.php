@@ -12,6 +12,12 @@ class DemosTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        // 通过 factory 方法生成 x 个数据并保存到数据库中
+        // factory(Demo::class, 5)->create();
+        $demos = factory(Demo::class, 5)->make();
+        $demos->map(function (Demo $demo, $key) {
+            $demo->sort -= $key;
+            $demo->save();
+        });
     }
 }

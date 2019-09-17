@@ -17,4 +17,6 @@ Route::group([
 
     $router->resource('users', 'UsersController');
     $router->resource('designers', 'DesignersController');
+    $router->resource('clients', 'ClientsController');
+    $router->resource('demos', 'DemosController');
 });

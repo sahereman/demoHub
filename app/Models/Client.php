@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Client extends Model
 {
@@ -27,8 +28,7 @@ class Client extends Model
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        //
     ];
 
     /**
@@ -37,7 +37,7 @@ class Client extends Model
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        //
     ];
 
     /**
@@ -45,9 +45,9 @@ class Client extends Model
      *
      * @var array
      */
-    /*protected $dates = [
-        'email_verified_at',
-    ];*/
+    protected $dates = [
+        //
+    ];
 
     /**
      * The accessors to append to the model's array form.
@@ -61,11 +61,15 @@ class Client extends Model
     /* Accessors */
     public function getAvatarUrlAttribute()
     {
-        // 如果 image 字段本身就已经是完整的 url 就直接返回
-        if (Str::startsWith($this->attributes['avatar'], ['http://', 'https://'])) {
-            return $this->attributes['avatar'];
+        if ($this->attributes['avatar']) {
+            // 如果 image 字段本身就已经是完整的 url 就直接返回
+            /*if (Str::startsWith($this->attributes['avatar'], ['http://', 'https://'])) {
+                return $this->attributes['avatar'];
+            }
+            return \Storage::disk('public')->url($this->attributes['avatar']);*/
+            return generate_image_url($this->attributes['avatar'], 'public');
         }
-        return \Storage::disk('public')->url($this->attributes['avatar']);
+        return '';
     }
 
     /* Mutators */

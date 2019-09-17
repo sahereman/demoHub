@@ -15,6 +15,15 @@ class CreateClientsTable extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->bigIncrements('id');
+
+            $table->string('name')->nullable(false)->comment('name');
+            $table->string('avatar')->nullable()->comment('avatar');
+            $table->string('email')->nullable()->comment('email');
+            $table->string('gender')->nullable(false)->default('male')->comment('gender');
+            $table->string('qq')->nullable()->comment('QQ');
+            $table->string('wechat')->nullable()->comment('微信');
+            $table->string('phone')->nullable()->comment('phone');
+
             $table->timestamps();
         });
     }

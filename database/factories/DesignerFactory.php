@@ -10,7 +10,8 @@ $factory->define(Designer::class, function (Faker $faker) {
     $password = bcrypt('123456');
     return [
         'name' => $faker->name,
-        'avatar' => $faker->imageUrl(),
+        // 'avatar' => $faker->imageUrl(),
+        'avatar' => asset('defaults/default_avatar.jpeg'),
         'email' => $faker->unique()->safeEmail,
         'email_verified_at' => now(),
         'gender' => 'male',

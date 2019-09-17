@@ -434,6 +434,77 @@ $ php artisan horizon
 # 安装了 Horizon 以后，我们将使用 horizon 命令来启动队列系统和任务监控，无需使用 queue:listen。
 ```
 
+### Eloquent-Sluggable: Easy creation of slugs for your Eloquent models in Laravel.
+
+[GitHub: https://github.com/cviebrock/eloquent-sluggable](https://github.com/cviebrock/eloquent-sluggable)
+
+```
+# Installation
+# 1. Install the package via Composer:
+$ composer require cviebrock/eloquent-sluggable:^4.8
+# The package will automatically register its service provider.
+# 2. Optionally, publish the configuration file if you want to change any defaults:
+$ php artisan vendor:publish --provider="Cviebrock\EloquentSluggable\ServiceProvider"
+
+# Updating your Eloquent Models
+# Your models should use the Sluggable trait, which has an abstract method sluggable() that you need to define. This is where any model-specific configuration is set (see Configuration below for details):
+--------------------------------------------------------------
+use Cviebrock\EloquentSluggable\Sluggable;
+
+class Post extends Model
+{
+  use Sluggable;
+
+  /**
+   * Return the sluggable configuration array for this model.
+   *
+   * @return array
+   */
+  public function sluggable()
+  {
+      return [
+          'slug' => [
+              'source' => 'title',
+          ]
+      ];
+  }
+}
+--------------------------------------------------------------
+
+# An example using a custom getter:
+--------------------------------------------------------------
+class Person extends Eloquent
+{
+  use Sluggable;
+
+  public function sluggable()
+  {
+      return [
+          'slug' => [
+              'source' => 'fullname'
+          ]
+      ];
+  }
+
+  public function getFullnameAttribute() {
+      return $this->firstname . ' ' . $this->lastname;
+  }
+}
+--------------------------------------------------------------
+
+# SluggableScopeHelpers Trait
+# Adding the optional `SluggableScopeHelpers` trait to your model allows you to work with models and their slugs. For example:
+--------------------------------------------------------------
+use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
+
+$post = Post::whereSlug($slugString)->get();
+
+$post = Post::findBySlug($slugString);
+
+$post = Post::findBySlugOrFail($slugString);
+--------------------------------------------------------------
+```
+
 ### encore/laravel-admin 扩展包
 
 [GitHub: https://github.com/z-song/laravel-admin](https://github.com/z-song/laravel-admin)
