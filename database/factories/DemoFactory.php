@@ -7,13 +7,9 @@ use Faker\Generator as Faker;
 
 $factory->define(Demo::class, function (Faker $faker) {
     return [
-        'designer_id' => 1,
-        'client_id' => 1,
+        'scenario' => Demo::DEMO_SCENARIO_PC,
         'name' => 'DEMO - ' . $faker->company,
-        'description' => 'DEMO - ' . $faker->sentence,
-        'content' => 'DEMO - ' . $faker->sentences(3, true),
-        'photos' => [asset('defaults/default_demo.jpeg')],
-        'is_index' => true,
-        'sort' => 9,
+        'description' => 'DEMO Description - ' . $faker->sentence,
+        'memo' => 'Client Name: ' . $faker->name . ', Phone Number: ' . $faker->phoneNumber,
     ];
 });

@@ -16,22 +16,11 @@ class CreateDemosTable extends Migration
         Schema::create('demos', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            $table->unsignedBigInteger('designer_id')->nullable()->comment('designer id');
-            $table->foreign('designer_id')->references('id')->on('designers')->onDelete('SET NULL');
-
-            $table->unsignedBigInteger('client_id')->nullable()->comment('client id');
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('SET NULL');
-
+            $table->string('scenario')->nullable(false)->default('PC')->comment('scenario: PC || Mobile');
             $table->string('name')->nullable(false)->comment('name');
             $table->string('slug')->nullable()->comment('slug');
-            $table->text('description')->nullable()->comment('description'); // 备用字段
-            $table->text('content')->nullable()->comment('content'); // 备用字段
-
-            $table->string('thumb')->nullable()->comment('缩略图');
-            $table->json('photos')->nullable()->comment('图片集');
-
-            $table->boolean('is_index')->nullable(false)->default(false)->comment('是否在首页展示');
-            $table->unsignedBigInteger('sort')->nullable(false)->default(9)->comment('排序值');
+            $table->text('description')->nullable()->comment('description');
+            $table->text('memo')->nullable()->comment('备注信息');
 
             $table->timestamps();
         });

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Admin\Models\Administrator;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Model;
@@ -21,22 +22,25 @@ class Demo extends Model
         ];
     }
 
+    const DEMO_SCENARIO_PC = 'PC';
+    const DEMO_SCENARIO_MOBILE = 'Mobile';
+
+    public static $demoScenarioMap = [
+        self::DEMO_SCENARIO_PC => 'PC 端',
+        self::DEMO_SCENARIO_MOBILE => '移动端',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'designer_id',
-        'client_id',
+        'scenario',
         'name',
         'slug',
         'description',
-        'content',
-        'thumb',
-        'photos',
-        'is_index',
-        'sort',
+        'memo',
     ];
 
     /**
@@ -54,8 +58,7 @@ class Demo extends Model
      * @var array
      */
     protected $casts = [
-        'photos' => 'json',
-        'is_index' => 'boolean',
+        //
     ];
 
     /**
@@ -64,7 +67,7 @@ class Demo extends Model
      * @var array
      */
     protected $dates = [
-        // 'email_verified_at',
+        //
     ];
 
     /**
@@ -73,81 +76,27 @@ class Demo extends Model
      * @var array
      */
     protected $appends = [
-        'thumb_url',
-        'photo_urls',
+        //
     ];
 
     /* Accessors */
-    public function getThumbUrlAttribute()
-    {
-        if ($this->attributes['thumb']) {
-            // 如果 thumb 字段本身就已经是完整的 url 就直接返回
-            /*if (Str::startsWith($this->attributes['thumb'], ['http://', 'https://'])) {
-                return $this->attributes['thumb'];
-            }
-            return Storage::disk('public')->url($this->attributes['thumb']);*/
-            return generate_image_url($this->attributes['thumb'], 'public');
-        }
-        return '';
-    }
-
-    public function getPhotoUrlsAttribute()
-    {
-        $photo_urls = [];
-        if ($this->attributes['photos']) {
-            $photos = json_decode($this->attributes['photos'], true);
-            if (count($photos) > 0) {
-                foreach ($photos as $photo) {
-                    /*if (Str::startsWith($photo, ['http://', 'https://'])) {
-                        $photo_urls[] = $photo;
-                    }
-                    $photo_urls[] = Storage::disk('public')->url($photo);*/
-                    $photo_urls[] = generate_image_url($photo, 'public');
-                }
-            }
-        }
-        return $photo_urls;
-    }
-
-    public function getDesignerNameAttribute()
-    {
-        return $this->designer->name;
-    }
-
-    public function getClientNameAttribute()
-    {
-        return $this->client->name;
-    }
+    //
 
     /* Mutators */
-    public function setThumbUrlAttribute($value)
+    public function setSlugAttribute($value)
     {
-        unset($this->attributes['thumb_url']);
-    }
-
-    public function setPhotoUrlsAttribute($value)
-    {
-        unset($this->attributes['photo_urls']);
-    }
-
-    public function setDesignerNameAttribute($value)
-    {
-        unset($this->attributes['designer_name']);
-    }
-
-    public function setClientNameAttribute($value)
-    {
-        unset($this->attributes['client_name']);
+        $position = strpos($value, '-S-');
+        if ($position === false) {
+            $this->attributes['slug'] = $value . '-S-' . Str::random();
+        } else {
+            $this->attributes['slug'] = $value;
+            // $this->attributes['slug'] = substr($value, 0, $position) . '-S-' . Str::random();
+        }
     }
 
     /* Eloquent Relationships */
-    public function designer()
+    public function designers()
     {
-        return $this->belongsTo(Designer::class);
-    }
-
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
+        return $this->belongsToMany(Administrator::class, 'demo_designers', 'demo_id', 'admin_user_id', 'id', 'id', 'designers');
     }
 }

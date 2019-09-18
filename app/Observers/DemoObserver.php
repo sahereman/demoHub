@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Demo;
+use Illuminate\Support\Str;
 
 class DemoObserver
 {
@@ -28,13 +29,9 @@ class DemoObserver
 
     public function saving(Demo $demo)
     {
-        // 缩略图
-        if (!empty($demo->photos)) {
-            $demo->thumb = $demo->photos[0];
-        } else {
-            $demo->thumb = asset('defaults/default_demo.jpeg');
-            $demo->photos = [asset('defaults/default_demo.jpeg')];
-        }
+        /*if ($demo->slug) {
+            $demo->slug .= Str::random();
+        }*/
     }
 
     /**
@@ -79,5 +76,20 @@ class DemoObserver
     public function forceDeleted(Demo $demo)
     {
         //
+    }
+
+    public function slugging(Demo $demo)
+    {
+        /*if ($demo->slug) {
+            $demo->slug .= Str::random();
+        }*/
+    }
+
+    public function slugged(Demo $demo)
+    {
+        /*if ($demo->slug) {
+            $demo->slug .= Str::random();
+            $demo->save();
+        }*/
     }
 }

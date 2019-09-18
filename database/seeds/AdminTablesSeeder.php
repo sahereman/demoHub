@@ -38,25 +38,17 @@ class AdminTablesSeeder extends Seeder
                 [
                     "parent_id" => 2,
                     "order" => 1,
-                    "title" => "Designers",
-                    "icon" => "fa-pencil",
-                    "uri" => "/designers",
-                    "permission" => NULL
-                ],
-                [
-                    "parent_id" => 2,
-                    "order" => 1,
-                    "title" => "Clients",
-                    "icon" => "fa-pencil",
-                    "uri" => "/clients",
-                    "permission" => NULL
-                ],
-                [
-                    "parent_id" => 2,
-                    "order" => 1,
                     "title" => "Demos",
                     "icon" => "fa-tablet",
                     "uri" => "/demos",
+                    "permission" => NULL
+                ],
+                [
+                    "parent_id" => 2,
+                    "order" => 2,
+                    "title" => "Demo Assignment",
+                    "icon" => "fa-compass",
+                    "uri" => "/demos/assignment",
                     "permission" => NULL
                 ],
                 [
@@ -68,7 +60,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 1,
                     "title" => "Users",
                     "icon" => "fa-users",
@@ -76,7 +68,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 2,
                     "title" => "Roles",
                     "icon" => "fa-user",
@@ -84,7 +76,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 3,
                     "title" => "Permission",
                     "icon" => "fa-ban",
@@ -92,7 +84,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 4,
                     "title" => "Menu",
                     "icon" => "fa-bars",
@@ -100,7 +92,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 5,
                     "title" => "Operation log",
                     "icon" => "fa-history",
@@ -108,7 +100,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 6,
                     "title" => "Log Viewer",
                     "icon" => "fa-database",
@@ -116,7 +108,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 7,
                     "title" => "Composer Viewer",
                     "icon" => "fa-gears",
@@ -124,7 +116,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 8,
                     "title" => "Env Manager",
                     "icon" => "fa-gears",
@@ -133,7 +125,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 9,
                     "title" => "PHP info",
                     // "icon" => "fa-exclamation",
@@ -142,7 +134,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 6,
+                    "parent_id" => 5,
                     "order" => 10,
                     "title" => "Horizon",
                     // "icon" => "fa-database",
@@ -192,7 +184,13 @@ class AdminTablesSeeder extends Seeder
                     "slug" => "ext.log-viewer",
                     "http_method" => NULL,
                     "http_path" => "/logs*"
-                ]
+                ],
+                [
+                    "name" => "DemoHub",
+                    "slug" => "demohub",
+                    "http_method" => NULL,
+                    "http_path" => "/demos*"
+                ],
             ]
         );
 
@@ -203,7 +201,11 @@ class AdminTablesSeeder extends Seeder
                 [
                     "name" => "Administrator",
                     "slug" => "administrator"
-                ]
+                ],
+                [
+                    "name" => "Designer",
+                    "slug" => "designer"
+                ],
             ]
         );
 
@@ -214,15 +216,33 @@ class AdminTablesSeeder extends Seeder
         // Menu::find(2)->roles()->save(Role::first());
 
         // create a user.
-        Administrator::truncate();
+        // Administrator::truncate();
         Administrator::create([
             'username' => 'admin',
             'password' => bcrypt('admin'),
-            'name'     => 'Administrator',
+            'name' => 'Administrator',
+        ]);
+        Administrator::create([
+            'username' => 'designer-1',
+            'password' => bcrypt('123456'),
+            'name' => 'Designer-1',
+        ]);
+        Administrator::create([
+            'username' => 'designer-2',
+            'password' => bcrypt('123456'),
+            'name' => 'Designer-2',
+        ]);
+        Administrator::create([
+            'username' => 'designer-3',
+            'password' => bcrypt('123456'),
+            'name' => 'Designer-3',
         ]);
 
         // add a role to a user.
         Administrator::first()->roles()->save(Role::first());
+        Administrator::find(2)->roles()->save(Role::find(2));
+        Administrator::find(3)->roles()->save(Role::find(2));
+        Administrator::find(4)->roles()->save(Role::find(2));
 
         // pivot tables
         DB::table('admin_role_menu')->truncate();
@@ -231,7 +251,23 @@ class AdminTablesSeeder extends Seeder
                 [
                     "role_id" => 1,
                     "menu_id" => 2
-                ]
+                ],
+                [
+                    "role_id" => 2,
+                    "menu_id" => 2
+                ],
+                [
+                    "role_id" => 1,
+                    "menu_id" => 4
+                ],
+                [
+                    "role_id" => 1,
+                    "menu_id" => 5
+                ],
+                [
+                    "role_id" => 2,
+                    "menu_id" => 5
+                ],
             ]
         );
 
@@ -244,7 +280,23 @@ class AdminTablesSeeder extends Seeder
                 [
                     "role_id" => 1,
                     "permission_id" => 1
-                ]
+                ],
+                [
+                    "role_id" => 2,
+                    "permission_id" => 2
+                ],
+                [
+                    "role_id" => 2,
+                    "permission_id" => 3
+                ],
+                [
+                    "role_id" => 2,
+                    "permission_id" => 6
+                ],
+                [
+                    "role_id" => 2,
+                    "permission_id" => 7
+                ],
             ]
         );
 

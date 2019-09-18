@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Demo;
 use App\Observers\DemoObserver;
+use Cviebrock\EloquentSluggable\SluggableObserver;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\ServiceProvider;
 
@@ -31,6 +32,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Demo::observe(DemoObserver::class);
+        // Demo::observe(DemoObserver::class);
     }
 }

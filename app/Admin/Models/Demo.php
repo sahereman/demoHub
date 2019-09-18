@@ -12,9 +12,18 @@ class Demo extends ProtoDemo
      * @var array
      */
     protected $appends = [
-        'thumb_url',
-        'photo_urls',
-        'designer_name',
-        'client_name',
+        'designer_ids',
     ];
+
+    /* Accessors */
+    public function getDesignerIdsAttribute()
+    {
+        return $this->designers->pluck('id')->toArray();
+    }
+
+    /* Mutators */
+    public function setDesignerIdsAttribute($value)
+    {
+        unset($this->attributes['designer_ids']);
+    }
 }

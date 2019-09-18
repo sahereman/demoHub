@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Admin\Models\Administrator;
+use App\Admin\Models\Demo;
 use App\Handlers\ImageUploadHandler;
 use App\Http\Requests\ImageUploadRequest;
 use App\Models\User;
