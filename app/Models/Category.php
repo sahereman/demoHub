@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Admin\Models\Administrator;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Demo extends Model
+class Category extends Model
 {
     use Sluggable;
     use SluggableScopeHelpers;
@@ -22,25 +21,16 @@ class Demo extends Model
         ];
     }
 
-    const DEMO_SCENARIO_PC = 'PC';
-    const DEMO_SCENARIO_MOBILE = 'Mobile';
-
-    public static $demoScenarioMap = [
-        self::DEMO_SCENARIO_PC => 'PC 端',
-        self::DEMO_SCENARIO_MOBILE => '移动端',
-    ];
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'scenario',
+        'demo_id',
         'name',
         'slug',
-        'description',
-        'memo',
+        'sort',
     ];
 
     /**
@@ -95,13 +85,13 @@ class Demo extends Model
     }
 
     /* Eloquent Relationships */
-    public function designers()
+    public function demo()
     {
-        return $this->belongsToMany(Administrator::class, 'demo_designers', 'demo_id', 'admin_user_id', 'id', 'id', 'designers');
+        return $this->belongsTo(Demo::class);
     }
 
-    public function categories()
+    public function drafts()
     {
-        return $this->hasMany(Category::class);
+        return $this->hasMany(Draft::class);
     }
 }

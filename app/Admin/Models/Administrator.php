@@ -3,6 +3,7 @@
 namespace App\Admin\Models;
 
 use App\Models\Demo;
+use App\Models\DemoDesigner;
 use Encore\Admin\Auth\Database\Administrator as ProtoAdministrator;
 use Encore\Admin\Auth\Database\Role;
 
@@ -17,6 +18,11 @@ class Administrator extends ProtoAdministrator
     public static function designers()
     {
         return Role::where('slug', self::ROLE_DESIGNER)->first()->administrators;
+    }
+
+    public function hasAccessToDemo(Demo $demo)
+    {
+        return DemoDesigner::where(['demo_id' => $demo->id, 'admin_user_id' => $this->attributes['id']])->exists();
     }
 
     /* Eloquent Relationships */

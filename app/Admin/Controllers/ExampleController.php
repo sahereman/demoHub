@@ -100,7 +100,7 @@ class ExampleController extends AdminController
     {
         $show = new Show(ExampleModel::findOrFail($id));
 
-        $show->panel()->tools(function ($tools) {
+        $show->panel()->tools(function (Show\Tools $tools) use ($id) {
             $tools->disableList();
             $tools->disableEdit();
             $tools->disableDelete();
@@ -192,7 +192,7 @@ class ExampleController extends AdminController
 
         $form->tools(function (Form\Tools $tools) {
             $tools->disableList();
-            $tools->disableEdit();
+            $tools->disableView();
             $tools->disableDelete();
             $tools->prepend('<div class="btn-group pull-right" style="margin-right: 5px">'
                 . '<a href="' . route('admin.products.sku_editor_show', ['product' => $id]) . '" class="btn btn-sm btn-success">'

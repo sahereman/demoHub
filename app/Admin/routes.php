@@ -19,4 +19,5 @@ Route::group([
     $router->get('demos/assignment', 'DemosController@assignmentShow')->name('admin.demos.assignment.show'); /*Demo Assignment 页面*/
     $router->post('demos/assignment', 'DemosController@assignmentStore')->name('admin.demos.assignment.store'); /*Demo Assignment 请求处理*/
     $router->resource('demos', 'DemosController');
+    $router->resource('categories', 'CategoriesController');
 });

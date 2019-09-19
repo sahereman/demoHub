@@ -2,13 +2,12 @@
 
 namespace App\Models;
 
-use App\Admin\Models\Administrator;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Demo extends Model
+class Draft extends Model
 {
     use Sluggable;
     use SluggableScopeHelpers;
@@ -22,25 +21,18 @@ class Demo extends Model
         ];
     }
 
-    const DEMO_SCENARIO_PC = 'PC';
-    const DEMO_SCENARIO_MOBILE = 'Mobile';
-
-    public static $demoScenarioMap = [
-        self::DEMO_SCENARIO_PC => 'PC 端',
-        self::DEMO_SCENARIO_MOBILE => '移动端',
-    ];
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'scenario',
+        'category_id',
         'name',
         'slug',
-        'description',
-        'memo',
+        'thumb',
+        'photo',
+        'sort',
     ];
 
     /**
@@ -76,11 +68,36 @@ class Demo extends Model
      * @var array
      */
     protected $appends = [
-        //
+        'thumb_url',
+        'photo_url',
     ];
 
     /* Accessors */
-    //
+    public function getThumbUrlAttribute()
+    {
+        if ($this->attributes['thumb']) {
+            // 如果 thumb 字段本身就已经是完整的 url 就直接返回
+            /*if (Str::startsWith($this->attributes['thumb'], ['http://', 'https://'])) {
+                return $this->attributes['thumb'];
+            }
+            return Storage::disk('public')->url($this->attributes['thumb']);*/
+            return generate_image_url($this->attributes['thumb'], 'public');
+        }
+        return '';
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->attributes['photo']) {
+            // 如果 photo 字段本身就已经是完整的 url 就直接返回
+            /*if (Str::startsWith($this->attributes['photo'], ['http://', 'https://'])) {
+                return $this->attributes['photo'];
+            }
+            return Storage::disk('public')->url($this->attributes['photo']);*/
+            return generate_image_url($this->attributes['photo'], 'public');
+        }
+        return '';
+    }
 
     /* Mutators */
     public function setSlugAttribute($value)
@@ -94,14 +111,19 @@ class Demo extends Model
         }
     }
 
-    /* Eloquent Relationships */
-    public function designers()
+    public function setThumbUrlAttribute($value)
     {
-        return $this->belongsToMany(Administrator::class, 'demo_designers', 'demo_id', 'admin_user_id', 'id', 'id', 'designers');
+        unset($this->attributes['thumb_url']);
     }
 
-    public function categories()
+    public function setPhotoUrlAttribute($value)
     {
-        return $this->hasMany(Category::class);
+        unset($this->attributes['photo_url']);
+    }
+
+    /* Eloquent Relationships */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }

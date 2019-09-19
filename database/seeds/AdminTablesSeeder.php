@@ -189,7 +189,7 @@ class AdminTablesSeeder extends Seeder
                     "name" => "DemoHub",
                     "slug" => "demohub",
                     "http_method" => NULL,
-                    "http_path" => "/demos*"
+                    "http_path" => "/demos*\r\n/categories*"
                 ],
             ]
         );
