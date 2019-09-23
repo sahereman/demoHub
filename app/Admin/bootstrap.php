@@ -18,6 +18,12 @@
  *
  */
 
+use App\Admin\Extensions\Form\ExtraImage;
+use App\Admin\Extensions\Form\ExtraMultiImage;
+
 // Encore\Admin\Form::forget(['map', 'editor']);
-Encore\Admin\Form::forget(['map']);
+// Encore\Admin\Form::forget(['map']);
+Encore\Admin\Form::forget(['map', 'image', 'multipleImage']);
 // Encore\Admin\Form::extend('editor', \Encore\WangEditor\Editor::class);
+Encore\Admin\Form::extend('image', ExtraImage::class);
+Encore\Admin\Form::extend('multipleImage', ExtraMultiImage::class);

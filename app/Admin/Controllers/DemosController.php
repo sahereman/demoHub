@@ -50,7 +50,7 @@ class DemosController extends AdminController
         $this->demo_id = $id;
         $demo = Demo::find($id);
         $admin_user = Admin::user();
-        $admin_user = Administrator::find($admin_user->id);
+        // $admin_user = Administrator::find($admin_user->id);
         if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo)) {
             // $response = new Response();
             // return $response->swal()->error(trans('admin.deny'))->send();
@@ -80,7 +80,8 @@ class DemosController extends AdminController
         if ($admin_user->isAdministrator()) {
             $grid->model()->orderBy('created_at', 'desc'); // 设置初始排序条件
         } else if ($admin_user->isRole(Administrator::ROLE_DESIGNER)) {
-            $demo_ids = Administrator::find($admin_user->id)->demos->pluck('id')->toArray();
+            // $demo_ids = Administrator::find($admin_user->id)->demos->pluck('id')->toArray();
+            $demo_ids = $admin_user->demos->pluck('id')->toArray();
             $grid->model()->orderBy('created_at', 'desc')->whereIn('id', $demo_ids); // 设置初始排序条件
         }
 
@@ -123,7 +124,7 @@ class DemosController extends AdminController
 
         $demo = Demo::find($id);
         $admin_user = Admin::user();
-        $admin_user = Administrator::find($admin_user->id);
+        // $admin_user = Administrator::find($admin_user->id);
         if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo)) {
             // $response = new Response();
             // return $response->swal()->error(trans('admin.deny'))->send();
@@ -206,16 +207,29 @@ class DemosController extends AdminController
                     . '</a>'
                     . '</div>&nbsp;');
             });
+            $demo = Demo::with('designers')->find($this->demo_id);
+            $admin_user = Admin::user();
+            // $admin_user = Administrator::find($admin_user->id);
+            if ($admin_user->isAdministrator()) {
+                $designers = Administrator::designers()->pluck('name', 'id')->toArray();
+                $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable');
+            } else if ($admin_user->hasAccessToDemo($demo)) {
+                $designers = $demo->designers->pluck('name', 'id')->toArray();
+                $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable')->disable();
+            } else {
+                abort(403, trans('admin.deny'));
+            }
+        } else if ($this->mode == Builder::MODE_CREATE) {
+            $admin_user = Admin::user();
+            // $admin_user = Administrator::find($admin_user->id);
+            if ($admin_user->isAdministrator()) {
+                $designers = Administrator::designers()->pluck('name', 'id')->toArray();
+                $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable');
+            }
+        } else {
+            abort(403, trans('admin.deny'));
         }
 
-        $designers = Administrator::designers()->pluck('name', 'id')->toArray();
-        $demo = Demo::with('designers')->find($this->demo_id);
-        $admin_user = Admin::user();
-        $admin_user = Administrator::find($admin_user->id);
-        if ($admin_user->hasAccessToDemo($demo)) {
-            $designers = $demo->designers->pluck('name', 'id')->toArray();
-        }
-        $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable')->disable();
         $form->switch('scenario', 'Scenario')->states([
             'on' => ['value' => Demo::DEMO_SCENARIO_PC, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_PC], 'color' => 'primary'],
             'off' => ['value' => Demo::DEMO_SCENARIO_MOBILE, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_MOBILE], 'color' => 'default'],
@@ -255,7 +269,7 @@ class DemosController extends AdminController
     public function assignmentShow(Content $content)
     {
         return $content
-            ->header('发送站内信')
+            ->header('Demo Assignment')
             ->body($this->assignmentForm());
     }
 

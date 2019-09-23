@@ -8,6 +8,7 @@ use App\Admin\Models\Demo;
 // use App\Http\Requests\Request;
 // use App\Models\Demo;
 use App\Models\Category;
+use App\Models\Draft;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Facades\Admin;
 use Encore\Admin\Form;
@@ -22,12 +23,16 @@ use Encore\Admin\Show;
 use Encore\Admin\Widgets\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 
 class CategoriesController extends AdminController
 {
     protected $mode = 'create';
     protected $demo_id;
     protected $category_id;
+    private $thumb_width = 240; /*缩略图宽度*/
+    private $thumb_height = 240; /*缩略图高度*/
 
     /**
      * Title for current resource.
@@ -315,8 +320,8 @@ class CategoriesController extends AdminController
         $form->divider();
         $form->hasMany('drafts', '素材 - 列表', function (NestedForm $form) {
             $form->text('name', '素材名称');
-            // $form->image('thumb', '缩略图')->move('draft/thumbs' . date('Ym', now()->timestamp));
-            $form->image('photo', '图片')->move('draft/photos' . date('Ym', now()->timestamp));
+            // $form->image('thumb', '缩略图')->uniqueName()->move('draft/thumbs/' . date('Ym', now()->timestamp));
+            $form->image('photo', '图片')->uniqueName()->move('draft/photos/' . date('Ym', now()->timestamp));
             $form->number('sort', '排序值')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
         });
 
@@ -326,7 +331,35 @@ class CategoriesController extends AdminController
         });
 
         $form->saved(function (Form $form) {
-            //
+            $drafts = request()->input('drafts');
+            if ($drafts && count($drafts) > 0) {
+                foreach ($drafts as $draft) {
+                    if (isset($draft['photo'])) {
+                        $photo = $draft['photo']; // UploadedFile
+                        $storage = Storage::disk('public');
+                        // $prefix_path = Storage::disk('public')->getAdapter()->getPathPrefix();
+                        $thumb_dir = 'draft/thumbs/' . date('Ym', now()->timestamp); /* 存储文件路径为 draft/thumbs/201909 */
+                        $i = 0;
+                        $thumb_name = 'thumb_' . $photo->getClientOriginalName();
+                        $name = pathinfo($thumb_name, PATHINFO_FILENAME);
+                        $extension = pathinfo($thumb_name, PATHINFO_EXTENSION);
+                        while ($storage->exists($thumb_dir . '/' . $thumb_name)) {
+                            $thumb_name = $name . '-' . $i . '.' . $extension;
+                            $i++;
+                        }
+                        $thumb_path = $thumb_dir . '/' . $thumb_name;
+                        $storage->putFileAs($thumb_dir, $photo, $thumb_name);
+                        $image = Image::make($photo)->orientate();
+                        $width = $image->width();
+                        $height = $image->height();
+                        $image->fit(min($width, $height))->resize($this->thumb_width, $this->thumb_height, function ($constraint) {
+                            // $constraint->aspectRatio();
+                            $constraint->upsize();
+                        })->save($storage->path($thumb_path));
+                        Draft::find($draft['id'])->update(['thumb' => $thumb_path]);
+                    }
+                }
+            }
         });
 
         return $form;

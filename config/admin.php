@@ -124,7 +124,8 @@ return [
         'providers' => [
             'admin' => [
                 'driver' => 'eloquent',
-                'model' => Encore\Admin\Auth\Database\Administrator::class,
+                // 'model' => Encore\Admin\Auth\Database\Administrator::class,
+                'model' => App\Admin\Models\Administrator::class,
             ],
         ],
 
@@ -178,7 +179,8 @@ return [
 
         // User tables and model.
         'users_table' => 'admin_users',
-        'users_model' => Encore\Admin\Auth\Database\Administrator::class,
+        // 'users_model' => Encore\Admin\Auth\Database\Administrator::class,
+        'users_model' => App\Admin\Models\Administrator::class,
 
         // Role table and model.
         'roles_table' => 'admin_roles',
@@ -263,7 +265,8 @@ return [
     | Supported: "tencent", "google", "yandex".
     |
     */
-    'map_provider' => 'google',
+    // 'map_provider' => 'google',
+    'map_provider' => 'tencent',
 
     /*
     |--------------------------------------------------------------------------
