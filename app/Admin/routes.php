@@ -10,7 +10,8 @@ Route::group([
     'middleware'    => config('admin.route.middleware'),
 ], function (Router $router) {
 
-    $router->get('/', 'HomeController@index')->name('admin.home');/*首页 - 系统信息*/
+//    $router->get('/', 'HomeController@index')->name('admin.home');/*首页 - 系统信息*/
+    $router->redirect('/', 'admin/demos');/*重定向至我的项目*/
     // $router->get('dashboard', 'PagesController@dashboard')->name('admin.dashboard');/*系统信息*/
     $router->get('horizon', 'PagesController@horizon')->name('admin.horizon');/*Horizon*/
     $router->post('wang_editor/images', 'WangEditorController@images')->name('admin.wang_editor.images');/*WangEditor 上传图片*/

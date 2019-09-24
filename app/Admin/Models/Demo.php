@@ -24,6 +24,7 @@ class Demo extends ProtoDemo
     /* Mutators */
     public function setDesignerIdsAttribute($value)
     {
+        $this->designers()->sync($value);
         unset($this->attributes['designer_ids']);
     }
 }

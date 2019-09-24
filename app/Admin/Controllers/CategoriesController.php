@@ -39,7 +39,7 @@ class CategoriesController extends AdminController
      *
      * @var string
      */
-    protected $title = '素材分类';
+    protected $title = '设计图分类';
 
     /**
      * Index interface.
@@ -180,19 +180,25 @@ class CategoriesController extends AdminController
         /*筛选*/
         $grid->filter(function ($filter) {
             $filter->disableIDFilter(); // 去掉默认的id过滤器
-            $filter->like('name', 'Name');
+            $filter->like('name', '分类名称');
         });
 
-        $grid->column('id', 'ID')->sortable();
+//        $grid->column('id', 'ID')->sortable();
         // $grid->column('demo_id', 'Demo id');
-        $grid->column('name', 'Name')->sortable();
+        $grid->column('name', '分类名称')->sortable();
         // $grid->column('slug', 'Slug');
-        $grid->column('sort', 'Sort')->sortable();
         // $grid->column('created_at', 'Created at');
         // $grid->column('updated_at', 'Updated at');
-        $grid->column('drafts', '素材')->display(function ($drafts) {
-            return count($drafts);
+        $grid->column('drafts', '设计图')->display(function ($drafts) {
+            $str = '';
+            foreach ($drafts as $item)
+            {
+//                dd($item);
+                $str .= "<a target='_blank' href='$item[photo_url]'><img style='width: 100px;height: 100px;' src='$item[thumb_url]'></a>";
+            }
+            return $str;
         });
+        $grid->column('sort', '排序')->sortable();
 
         return $grid;
     }
@@ -229,14 +235,14 @@ class CategoriesController extends AdminController
 
         $show->field('id', 'ID');
         // $show->field('demo_id', 'Demo id');
-        $show->field('name', 'Name');
-        $show->field('slug', 'Slug');
-        $show->field('sort', 'Sort');
-        $show->field('created_at', 'Created at');
-        $show->field('updated_at', 'Updated at');
+        $show->field('name', '分类名称');
+//        $show->field('slug', 'Slug');
+        $show->field('sort', '排序');
+        $show->field('created_at', '创建时间');
+        $show->field('updated_at', '更新时间');
 
         $show->divider();
-        $show->drafts('素材 - 列表', function ($draft) {
+        $show->drafts('设计图 - 列表', function ($draft) {
             /*禁用*/
             $draft->disableActions();
             $draft->disableRowSelector();
@@ -247,7 +253,7 @@ class CategoriesController extends AdminController
 
             // $draft->resource('/admin/drafts');
 
-            $draft->column('name', '素材名称');
+            $draft->column('name', '设计图名称');
             $draft->column('thumb', '缩略图')->image('', 60);
         });
 
@@ -311,18 +317,18 @@ class CategoriesController extends AdminController
 
         // $form->number('demo_id', 'Demo id');
         $form->hidden('demo_id', 'Demo id')->default($demo_id);
-        $form->display('Demo')->default($demo->name);
-        $form->text('name', 'Name')->rules('required|string');
+        $form->display('Demo','项目名')->default($demo->name);
+        $form->text('name', '分类名称')->rules('required|string');
         // $form->text('slug', 'Slug');
         // $form->number('sort', 'Sort')->default(9);
         $form->number('sort', '排序值')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
 
         $form->divider();
-        $form->hasMany('drafts', '素材 - 列表', function (NestedForm $form) {
-            $form->text('name', '素材名称');
+        $form->hasMany('drafts', '设计图 - 列表', function (NestedForm $form) {
+            $form->text('name', '设计图名称');
             // $form->image('thumb', '缩略图')->uniqueName()->move('draft/thumbs/' . date('Ym', now()->timestamp));
-            $form->image('photo', '图片')->uniqueName()->move('draft/photos/' . date('Ym', now()->timestamp));
-            $form->number('sort', '排序值')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
+            $form->image('photo', '设计图上传')->uniqueName()->move('draft/photos/' . date('Ym', now()->timestamp));
+            $form->number('sort', '排序')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
         });
 
         // 定义事件回调，当模型即将保存时会触发这个回调
@@ -331,6 +337,7 @@ class CategoriesController extends AdminController
         });
 
         $form->saved(function (Form $form) {
+            $this->category_id = Route::current()->parameter('category');
             $drafts = request()->input('drafts');
             if ($drafts && count($drafts) > 0) {
                 foreach ($drafts as $draft) {
@@ -356,7 +363,13 @@ class CategoriesController extends AdminController
                             // $constraint->aspectRatio();
                             $constraint->upsize();
                         })->save($storage->path($thumb_path));
-                        Draft::find($draft['id'])->update(['thumb' => $thumb_path]);
+                        if ($draft['id']) {
+                            Draft::find($draft['id'])->update(['thumb' => $thumb_path]);
+                        } else {
+                            $draft['thumb'] = $thumb_path;
+                            $draft['category_id'] = $this->category_id;
+                            Draft::create($draft);
+                        }
                     }
                 }
             }

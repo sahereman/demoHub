@@ -15,30 +15,31 @@ class AdminTablesSeeder extends Seeder
      */
     public function run()
     {
+        $admin_menu_id = 3;
         // base tables
         Menu::truncate();
         Menu::insert(
             [
-                [
-                    "parent_id" => 0,
-                    "order" => 1,
-                    "title" => "Dashboard",
-                    "icon" => "fa-bar-chart",
-                    "uri" => "/",
-                    "permission" => NULL
-                ],
+//                [
+//                    "parent_id" => 0,
+//                    "order" => 1,
+//                    "title" => "Dashboard",
+//                    "icon" => "fa-bar-chart",
+//                    "uri" => "/",
+//                    "permission" => NULL
+//                ],
                 [
                     "parent_id" => 0,
                     "order" => 2,
-                    "title" => "DemoHub",
+                    "title" => "我的项目",
                     "icon" => "fa-table",
                     "uri" => "",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 2,
+                    "parent_id" => 1,
                     "order" => 1,
-                    "title" => "Demos",
+                    "title" => "项目",
                     "icon" => "fa-tablet",
                     "uri" => "/demos",
                     "permission" => NULL
@@ -54,61 +55,61 @@ class AdminTablesSeeder extends Seeder
                 [
                     "parent_id" => 0,
                     "order" => 3,
-                    "title" => "Admin",
+                    "title" => "管理设置",
                     "icon" => "fa-tasks",
                     "uri" => "",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 1,
-                    "title" => "Users",
+                    "title" => "用户",
                     "icon" => "fa-users",
                     "uri" => "auth/users",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 2,
-                    "title" => "Roles",
+                    "title" => "角色",
                     "icon" => "fa-user",
                     "uri" => "auth/roles",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 3,
-                    "title" => "Permission",
+                    "title" => "权限",
                     "icon" => "fa-ban",
                     "uri" => "auth/permissions",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 4,
-                    "title" => "Menu",
+                    "title" => "菜单",
                     "icon" => "fa-bars",
                     "uri" => "auth/menu",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 5,
-                    "title" => "Operation log",
+                    "title" => "操作日志",
                     "icon" => "fa-history",
                     "uri" => "auth/logs",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 6,
-                    "title" => "Log Viewer",
+                    "title" => "系统日志",
                     "icon" => "fa-database",
                     "uri" => "logs",
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 7,
                     "title" => "Composer Viewer",
                     "icon" => "fa-gears",
@@ -116,7 +117,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 8,
                     "title" => "Env Manager",
                     "icon" => "fa-gears",
@@ -125,7 +126,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 9,
                     "title" => "PHP info",
                     // "icon" => "fa-exclamation",
@@ -134,7 +135,7 @@ class AdminTablesSeeder extends Seeder
                     "permission" => NULL
                 ],
                 [
-                    "parent_id" => 4,
+                    "parent_id" => $admin_menu_id,
                     "order" => 10,
                     "title" => "Horizon",
                     // "icon" => "fa-database",

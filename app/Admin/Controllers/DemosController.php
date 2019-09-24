@@ -21,6 +21,7 @@ use Encore\Admin\Show;
 // use Encore\Admin\Show\Tools;
 use Encore\Admin\Widgets\Table;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Arr;
 
 class DemosController extends AdminController
 {
@@ -31,17 +32,14 @@ class DemosController extends AdminController
 
     /**
      * Title for current resource.
-     *
      * @var string
      */
     protected $title = 'Demo';
 
     /**
      * Edit interface.
-     *
      * @param mixed $id
      * @param Content $content
-     *
      * @return Content
      */
     public function edit($id, Content $content)
@@ -51,7 +49,8 @@ class DemosController extends AdminController
         $demo = Demo::find($id);
         $admin_user = Admin::user();
         // $admin_user = Administrator::find($admin_user->id);
-        if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo)) {
+        if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo))
+        {
             // $response = new Response();
             // return $response->swal()->error(trans('admin.deny'))->send();
             // return $response->toastr()->error(trans('admin.deny'))->send();
@@ -69,7 +68,6 @@ class DemosController extends AdminController
 
     /**
      * Make a grid builder.
-     *
      * @return Grid
      */
     protected function grid()
@@ -77,9 +75,11 @@ class DemosController extends AdminController
         $grid = new Grid(new Demo);
 
         $admin_user = Admin::user();
-        if ($admin_user->isAdministrator()) {
+        if ($admin_user->isAdministrator())
+        {
             $grid->model()->orderBy('created_at', 'desc'); // 设置初始排序条件
-        } else if ($admin_user->isRole(Administrator::ROLE_DESIGNER)) {
+        } else if ($admin_user->isRole(Administrator::ROLE_DESIGNER))
+        {
             // $demo_ids = Administrator::find($admin_user->id)->demos->pluck('id')->toArray();
             $demo_ids = $admin_user->demos->pluck('id')->toArray();
             $grid->model()->orderBy('created_at', 'desc')->whereIn('id', $demo_ids); // 设置初始排序条件
@@ -91,22 +91,28 @@ class DemosController extends AdminController
             $filter->like('name', 'Name');
         });
 
-        $grid->column('id', 'ID')->sortable();
-        $grid->column('scenario', 'Scenario')->switch([
-            'on' => ['value' => Demo::DEMO_SCENARIO_PC, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_PC], 'color' => 'primary'],
-            'off' => ['value' => Demo::DEMO_SCENARIO_MOBILE, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_MOBILE], 'color' => 'default'],
-        ])->sortable();
-        $grid->column('name', 'Name')->sortable();
+        //        $grid->column('id', 'ID')->sortable();
+        $grid->column('created_at', '创建时间')->sortable();
+
+
+        $grid->column('name', '项目名')->sortable();
         // $grid->column('slug', 'Slug');
         // $grid->column('description', 'Description');
         // $grid->column('memo', '备注信息');
-        // $grid->column('created_at', 'Created at');
-        // $grid->column('updated_at', 'Updated at');
-        $grid->column('designers', 'Designers')->display(function ($designers) {
-            return count($designers);
+        //         $grid->column('updated_at', 'Updated at');
+        $grid->column('designers', '所属设计师')->display(function ($designers) {
+            return implode(' , ', Arr::pluck($designers, 'username'));
         });
-        $grid->column('categories', '素材分类')->display(function ($categories) {
-            return count($categories);
+        $grid->column('categories', '设计图分类')->display(function ($categories) {
+            return implode(' , ', Arr::pluck($categories, 'name'));
+        });
+//        $grid->column('scenario', '项目场景')->switch([
+//            'on' => ['value' => Demo::DEMO_SCENARIO_PC, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_PC], 'color' => 'primary'],
+//            'off' => ['value' => Demo::DEMO_SCENARIO_MOBILE, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_MOBILE], 'color' => 'default'],
+//        ])->sortable();
+        $grid->option('','选项')->count()->display(function ($item) {
+            $buttons = '<a class="btn btn-xs btn-primary" style="margin-right:8px" href="' . route('categories.index', ['demo_id' => $this->id]) . '">设计图管理</a>';
+            return $buttons;
         });
 
         return $grid;
@@ -114,7 +120,6 @@ class DemosController extends AdminController
 
     /**
      * Make a show builder.
-     *
      * @param mixed $id
      * @return Show
      */
@@ -125,7 +130,8 @@ class DemosController extends AdminController
         $demo = Demo::find($id);
         $admin_user = Admin::user();
         // $admin_user = Administrator::find($admin_user->id);
-        if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo)) {
+        if (!$admin_user->isAdministrator() && !$admin_user->hasAccessToDemo($demo))
+        {
             // $response = new Response();
             // return $response->swal()->error(trans('admin.deny'))->send();
             // return $response->toastr()->error(trans('admin.deny'))->send();
@@ -141,29 +147,30 @@ class DemosController extends AdminController
             $tools->append('<div class="btn-group pull-right" style="margin-right: 5px">'
                 // . '<a href="/admin/categories?demo_id=' . $id . '" class="btn btn-sm btn-success">'
                 . '<a href="' . route('categories.index', ['demo_id' => $id]) . '" class="btn btn-sm btn-success">'
-                . '<i class="fa fa-archive"></i>&nbsp;素材管理'
+                . '<i class="fa fa-archive"></i>&nbsp;设计图管理'
                 . '</a>'
                 . '</div>&nbsp;');
         });
 
         // $show->field('id', 'ID');
-        $show->field('designers', 'Designers')->as(function ($designers) {
+        $show->field('designers', '所属设计师')->as(function ($designers) {
             $designer_names = '';
-            foreach ($designers as $designer) {
-                $designer_names .= $designer['name'] . ' & ';
+            foreach ($designers as $designer)
+            {
+                $designer_names .= $designer['name'] . ' , ';
             }
             return substr($designer_names, 0, -3);
         });
-        $show->field('scenario', 'Scenario')->using(Demo::$demoScenarioMap)->setWidth(1);
-        $show->field('name', 'Name')->setWidth(3);
+        $show->field('scenario', '项目场景')->using(Demo::$demoScenarioMap)->setWidth(1);
+        $show->field('name', '项目名')->setWidth(3);
         // $show->field('slug', 'Slug');
-        $show->field('description', 'Description');
+        //        $show->field('description', 'Description');
         $show->field('memo', '备注信息');
-        $show->field('created_at', 'Created at');
-        $show->field('updated_at', 'Updated at');
+        $show->field('created_at', '创建时间');
+        //        $show->field('updated_at', 'Updated at');
 
         $show->divider();
-        $show->categories('素材分类 - 列表', function ($category) {
+        $show->categories('设计图分类 - 列表', function ($category) {
             /*禁用*/
             $category->disableActions();
             $category->disableRowSelector();
@@ -174,9 +181,14 @@ class DemosController extends AdminController
 
             // $category->resource('/admin/categories');
 
-            $category->column('name', '素材分类名称');
-            $category->column('drafts', '素材')->display(function ($drafts) {
-                return count($drafts);
+            $category->column('name', '分类名称');
+            $category->column('drafts', '设计图')->display(function ($drafts) {
+                $str = '';
+                foreach ($drafts as $item)
+                {
+                    $str .= "<a target='_blank' href='$item[photo_url]'><img style='width: 100px;height: 100px;' src='$item[thumb_url]'></a>";
+                }
+                return $str;
             });
         });
 
@@ -185,7 +197,6 @@ class DemosController extends AdminController
 
     /**
      * Make a form builder.
-     *
      * @return Form
      */
     protected function form()
@@ -193,7 +204,8 @@ class DemosController extends AdminController
         $form = new Form(new Demo);
         $form->html('<button class="btn btn-primary"><i class="fa fa-send"></i>&nbsp;提交</button>');
 
-        if ($this->mode == Builder::MODE_EDIT) {
+        if ($this->mode == Builder::MODE_EDIT)
+        {
             $demo_id = $this->demo_id;
             $form->tools(function (Form\Tools $tools) use ($demo_id) {
                 // $tools->disableList();
@@ -203,48 +215,54 @@ class DemosController extends AdminController
                 $tools->append('<div class="btn-group pull-right" style="margin-right: 5px">'
                     // . '<a href="/admin/categories?demo_id=' . $id . '" class="btn btn-sm btn-success">'
                     . '<a href="' . route('categories.index', ['demo_id' => $demo_id]) . '" class="btn btn-sm btn-success">'
-                    . '<i class="fa fa-archive"></i>&nbsp;素材管理'
+                    . '<i class="fa fa-archive"></i>&nbsp;设计图管理'
                     . '</a>'
                     . '</div>&nbsp;');
             });
             $demo = Demo::with('designers')->find($this->demo_id);
             $admin_user = Admin::user();
             // $admin_user = Administrator::find($admin_user->id);
-            if ($admin_user->isAdministrator()) {
+            if ($admin_user->isAdministrator())
+            {
                 $designers = Administrator::designers()->pluck('name', 'id')->toArray();
-                $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable');
-            } else if ($admin_user->hasAccessToDemo($demo)) {
+                $form->checkbox('designer_ids', '所属设计师')->options($designers)->rules('nullable');
+            } else if ($admin_user->hasAccessToDemo($demo))
+            {
                 $designers = $demo->designers->pluck('name', 'id')->toArray();
-                $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable')->disable();
-            } else {
+                $form->checkbox('designer_ids', '所属设计师')->options($designers)->rules('nullable')->disable();
+            } else
+            {
                 abort(403, trans('admin.deny'));
             }
-        } else if ($this->mode == Builder::MODE_CREATE) {
+        } else if ($this->mode == Builder::MODE_CREATE)
+        {
             $admin_user = Admin::user();
             // $admin_user = Administrator::find($admin_user->id);
-            if ($admin_user->isAdministrator()) {
+            if ($admin_user->isAdministrator())
+            {
                 $designers = Administrator::designers()->pluck('name', 'id')->toArray();
                 $form->checkbox('designer_ids', 'Designers')->options($designers)->rules('nullable');
             }
-        } else {
+        } else
+        {
             abort(403, trans('admin.deny'));
         }
 
-        $form->switch('scenario', 'Scenario')->states([
+        $form->switch('scenario', '项目场景')->states([
             'on' => ['value' => Demo::DEMO_SCENARIO_PC, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_PC], 'color' => 'primary'],
             'off' => ['value' => Demo::DEMO_SCENARIO_MOBILE, 'text' => Demo::$demoScenarioMap[Demo::DEMO_SCENARIO_MOBILE], 'color' => 'default'],
         ])->default(Demo::DEMO_SCENARIO_PC);
-        $form->text('name', 'Name')->rules('required|string');
+        $form->text('name', '项目名')->rules('required|string');
         // $form->text('slug', 'Slug');
         // $form->textarea('description', 'Description')->rules('required|string');
-        $form->editor('description', 'Description')->rules('required|string');
+        //        $form->editor('description', 'Description')->rules('required|string');
         $form->textarea('memo', '备注信息')->rules('string');
 
         $form->divider();
-        $form->hasMany('categories', '素材分类 - 列表', function (NestedForm $form) {
-            $form->text('name', '商品参数名称');
-            $form->number('sort', '排序值')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
-        });
+        //        $form->hasMany('categories', '素材分类 - 列表', function (NestedForm $form) {
+        //            $form->text('name', '商品参数名称');
+        //            $form->number('sort', '排序值')->default(9)->rules('required|integer|min:0')->help('默认倒序排列：数值越大越靠前');
+        //        });
 
         // 定义事件回调，当模型即将保存时会触发这个回调
         $form->saving(function (Form $form) {
@@ -299,7 +317,8 @@ class DemosController extends AdminController
             'designer_ids' => [
                 'required',
                 function ($attribute, $value, $fail) {
-                    if (Administrator::whereIn('id', request()->input($attribute))->count() == 0) {
+                    if (Administrator::whereIn('id', request()->input($attribute))->count() == 0)
+                    {
                         $fail('请选择设计师');
                     }
                 },
@@ -313,7 +332,8 @@ class DemosController extends AdminController
         $demo_id = $data['demo_id'];
         $designer_ids = $data['designer_ids'];
         $key = array_search(NULL, $designer_ids, true);
-        if ($key !== false) {
+        if ($key !== false)
+        {
             unset($designer_ids[$key]);
         }
         $demo = Demo::find($demo_id);

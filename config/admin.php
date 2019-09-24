@@ -11,7 +11,7 @@ return [
     | login page.
     |
     */
-    'name' => 'DemoHub-admin',
+    'name' => 'Sahereman 设计展示',
 
     /*
     |--------------------------------------------------------------------------
@@ -22,7 +22,7 @@ return [
     | `img` tag, eg '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo' => '<b>DemoHub</b> admin',
+    'logo' => '<b>Sahereman</b> 设计展示',
 
     /*
     |--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ return [
     | '<img src="http://logo-url" alt="Admin logo">'.
     |
     */
-    'logo-mini' => '<b>DH</b>',
+    'logo-mini' => '<b>SHM</b>',
 
     /*
     |--------------------------------------------------------------------------
@@ -282,7 +282,9 @@ return [
     |    "skin-red", "skin-red-light", "skin-black", "skin-black-light".
     |
     */
-    'skin' => 'skin-blue-light',
+//    'skin' => 'skin-blue-light',
+    'skin' => 'skin-black',
+
 
     /*
     |--------------------------------------------------------------------------
@@ -296,7 +298,8 @@ return [
     | "sidebar-mini".
     |
     */
-    'layout' => ['sidebar-mini', 'sidebar-collapse'],
+//    'layout' => ['sidebar-mini', 'sidebar-collapse'],
+    'layout' => ['fixed', 'sidebar-mini'],
 
     /*
     |--------------------------------------------------------------------------
