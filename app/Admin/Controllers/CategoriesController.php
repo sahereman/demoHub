@@ -4,7 +4,6 @@ namespace App\Admin\Controllers;
 
 use App\Admin\Models\Administrator;
 use App\Admin\Models\Demo;
-
 // use App\Http\Requests\Request;
 // use App\Models\Demo;
 use App\Models\Category;
@@ -191,9 +190,7 @@ class CategoriesController extends AdminController
         // $grid->column('updated_at', 'Updated at');
         $grid->column('drafts', '设计图')->display(function ($drafts) {
             $str = '';
-            foreach ($drafts as $item)
-            {
-//                dd($item);
+            foreach ($drafts as $item) {
                 $str .= "<a target='_blank' href='$item[photo_url]'><img style='width: 100px;height: 100px;' src='$item[thumb_url]'></a>";
             }
             return $str;
@@ -317,7 +314,7 @@ class CategoriesController extends AdminController
 
         // $form->number('demo_id', 'Demo id');
         $form->hidden('demo_id', 'Demo id')->default($demo_id);
-        $form->display('Demo','项目名')->default($demo->name);
+        $form->display('Demo', '项目名')->default($demo->name);
         $form->text('name', '分类名称')->rules('required|string');
         // $form->text('slug', 'Slug');
         // $form->number('sort', 'Sort')->default(9);
@@ -337,17 +334,30 @@ class CategoriesController extends AdminController
         });
 
         $form->saved(function (Form $form) {
-            $this->category_id = Route::current()->parameter('category');
-            $drafts = request()->input('drafts');
+            // $this->category_id = Route::current()->parameter('category');
+            $this->demo_id = $form->model()->getAttribute('demo_id');
+            $this->category_id = $form->model()->getAttribute('id');
+            // $photos = request()->file('drafts');
+            // $drafts = request()->input('drafts');
+            $draft_collection = $form->model()->drafts;
+            $drafts = request()->all('drafts');
+            $drafts = $drafts['drafts'];
             if ($drafts && count($drafts) > 0) {
-                foreach ($drafts as $draft) {
+                foreach ($drafts as $key => $draft) {
+                    // if (isset($draft['photo']) || isset($photos[$key])) {
+                    // if (isset($photos[$key])) {
                     if (isset($draft['photo'])) {
+                        // $photo = $photos[$key]['photo']; // UploadedFile
                         $photo = $draft['photo']; // UploadedFile
+                        // $photo_name = pathinfo($photo, PATHINFO_FILENAME);
+                        // $photo_extension = pathinfo($photo, PATHINFO_EXTENSION);
+                        // $photo_path = storage_path($draft['photo']);
                         $storage = Storage::disk('public');
                         // $prefix_path = Storage::disk('public')->getAdapter()->getPathPrefix();
                         $thumb_dir = 'draft/thumbs/' . date('Ym', now()->timestamp); /* 存储文件路径为 draft/thumbs/201909 */
                         $i = 0;
                         $thumb_name = 'thumb_' . $photo->getClientOriginalName();
+                        // $thumb_name = 'thumb_' . $photo_name . '.' . $photo_extension;
                         $name = pathinfo($thumb_name, PATHINFO_FILENAME);
                         $extension = pathinfo($thumb_name, PATHINFO_EXTENSION);
                         while ($storage->exists($thumb_dir . '/' . $thumb_name)) {
@@ -357,22 +367,20 @@ class CategoriesController extends AdminController
                         $thumb_path = $thumb_dir . '/' . $thumb_name;
                         $storage->putFileAs($thumb_dir, $photo, $thumb_name);
                         $image = Image::make($photo)->orientate();
+                        // $image = Image::make($photo_path)->orientate();
                         $width = $image->width();
                         $height = $image->height();
                         $image->fit(min($width, $height))->resize($this->thumb_width, $this->thumb_height, function ($constraint) {
                             // $constraint->aspectRatio();
                             $constraint->upsize();
                         })->save($storage->path($thumb_path));
-                        if ($draft['id']) {
-                            Draft::find($draft['id'])->update(['thumb' => $thumb_path]);
-                        } else {
-                            $draft['thumb'] = $thumb_path;
-                            $draft['category_id'] = $this->category_id;
-                            Draft::create($draft);
-                        }
+                        $draft_collection->where('name', $draft['name'])->first()->update([
+                            'thumb' => $thumb_path,
+                        ]);
                     }
                 }
             }
+            return redirect()->route('categories.index', ['demo_id' => $this->demo_id]);
         });
 
         return $form;
