@@ -105,7 +105,7 @@ class Demo extends Model
         for ($i = 0; $i < 10; $i++) {
             // 随机生成 6 位的数字
             // $slug = $prefix . str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
-            $slug = Str::random();
+            $slug = 'De' . Str::random();
             // 判断是否已经存在
             if (!static::query()->where('slug', $slug)->exists()) {
                 return $slug;
